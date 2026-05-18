@@ -8,6 +8,7 @@ class Note:
         self.x = x
         self.y = -50
         self.speed = 5
+        self.hit = False
 
     def update(self, current_time):
         if current_time >= self.timing:
@@ -36,6 +37,9 @@ def main():
 
     while True:
 
+        current_time = pygame.time.get_ticks()
+        
+
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -43,15 +47,23 @@ def main():
             elif event.type == KEYDOWN:
                 if event.key == K_SPACE:
                     for note in notes:
-                        if abs(note.y - 500) <= 50:
+
+                        if note.hit:
+                            continue
+
+                        diff = abs(current_time - note.timing)
+
+                        if diff <= 50:
                             print("Perfect!")
-                        if abs(note.y - 500) <= 100:
+                            note.hit = True
+                            break
+
+                        elif diff <= 100:
                             print("Good!")
-                        else:
-                            print("Miss!")
+                            note.hit = True
+                            break
 
 
-        current_time = pygame.time.get_ticks()
 
         for note in notes:
             if current_time >= note.timing:
@@ -60,7 +72,8 @@ def main():
         screen.fill((0, 0, 0))
 
         for note in notes:
-            note.draw(screen)
+            if not note.hit:   
+                note.draw(screen)
         pygame.draw.line(screen, (255, 0 , 0), (0, 500), (800, 500), 5)
         pygame.display.update()
 
