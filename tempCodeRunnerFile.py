@@ -55,7 +55,6 @@ def main():
 
         for event in pygame.event.get():
             if event.type == QUIT:
-                print(f"Final Score: {score}")
                 pygame.quit()
                 sys.exit()
             elif event.type == KEYDOWN:
