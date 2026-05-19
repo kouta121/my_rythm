@@ -3,12 +3,13 @@ from pygame.locals import *
 import sys
 
 class Note:
-    def __init__(self, x, timing):
+    def __init__(self, x, timing, travel_time):
         self.timing = timing
         self.x = x
         self.y = -50
         self.speed = 5
         self.hit = False
+        self.judge_time = travel_time + timing
 
     def update(self, current_time):
         if current_time >= self.timing:
@@ -26,18 +27,24 @@ def main():
     clock = pygame.time.Clock()
 
     lane_x = 350
-    notes = [Note(350, 2000),
-             Note(350, 3000),
-            Note(350, 4000)
+    notes = [Note(350, 2000, 1830),
+             Note(350, 3000, 1830),
+             Note(350, 4000, 1830)
         ]  # ノートの初期位置とタイミングを設定
 
     note_speed = 5
 
     note_time = 2000
 
+    score = 0
+
+    font = pygame.font.Font(None, 50)
+
+
     while True:
 
         current_time = pygame.time.get_ticks()
+
         
 
         for event in pygame.event.get():
@@ -51,23 +58,28 @@ def main():
                         if note.hit:
                             continue
 
-                        diff = abs(current_time - note.timing)
+                        diff = abs(current_time - note.judge_time)
 
                         if diff <= 50:
                             print("Perfect!")
+                            score += 100
                             note.hit = True
                             break
 
                         elif diff <= 100:
                             print("Good!")
+                            score += 50
                             note.hit = True
                             break
-
+            
 
 
         for note in notes:
+
             if current_time >= note.timing:
                 note.update(current_time)
+
+            
 
         screen.fill((0, 0, 0))
 
