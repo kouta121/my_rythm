@@ -79,7 +79,9 @@ def main():
             if current_time >= note.timing:
                 note.update(current_time)
 
-            
+            if not note.hit and current_time > note.judge_time + 100:
+                print("Miss!")
+                note.hit = True
 
         screen.fill((0, 0, 0))
 
