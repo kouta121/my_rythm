@@ -51,6 +51,9 @@ def main():
 
     score = 0
 
+    combo = 0
+    max_combo = 0
+
     pressed_lane = 0
 
     font = pygame.font.Font(None, 50)
@@ -65,6 +68,7 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 print(f"Final Score: {score}")
+                print(f"Max Combo: {max_combo}")
                 pygame.quit()
                 sys.exit()
             elif event.type == KEYDOWN:
@@ -79,24 +83,30 @@ def main():
                     
                 for note in notes:
 
-                        if note.hit:
+                    if note.hit:
                             continue
-                        if note.lane != pressed_lane:
+                    if note.lane != pressed_lane:
                             continue
 
-                        diff = abs(current_time - note.judge_time)
+                    diff = abs(current_time - note.judge_time)
 
-                        if diff <= 50:
-                            print("Perfect!")
-                            score += 100
-                            note.hit = True
-                            break
+                    if diff <= 50:
+                        print("Perfect!")
+                        score += 100
+                        combo += 1
+                        if combo > max_combo:
+                            max_combo = combo
+                        note.hit = True
+                        break
 
-                        elif diff <= 100:
-                            print("Good!")
-                            score += 50
-                            note.hit = True
-                            break
+                    elif diff <= 100:
+                        print("Good!")
+                        score += 50
+                        combo += 1
+                        if combo > max_combo:
+                            max_combo = combo
+                        note.hit = True
+                        break
             
 
 
@@ -107,6 +117,7 @@ def main():
 
             if not note.hit and current_time > note.judge_time + 100:
                 print("Miss!")
+                combo = 0
                 note.hit = True
 
         screen.fill((0, 0, 0))
