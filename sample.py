@@ -5,9 +5,16 @@ import time
 import json
 
 class Note:
-    def __init__(self, x, timing, travel_time):
+    def __init__(self, lane, timing, travel_time):
         self.timing = timing
-        self.x = x
+        self.lane = lane
+        lane_x = {
+            0:200,
+            1:300,
+            2:400, 
+            3:500
+        }
+        self.x = lane_x[lane]
         self.y = -50
         self.speed = 5
         self.hit = False
@@ -35,7 +42,7 @@ def main():
     with open('charts/test.json', 'r') as f:
         note_data = json.load(f)
         for data in note_data:
-            note = Note(350, data['timing'], 1830)  # ノートの位置とタイミングを設定
+            note = Note(data['lane'], data['timing'], 1830)  # ノートの位置とタイミングを設定
             notes.append(note)
 
     note_speed = 5
@@ -43,6 +50,8 @@ def main():
     note_time = 2000
 
     score = 0
+
+    pressed_lane = 0
 
     font = pygame.font.Font(None, 50)
 
@@ -59,10 +68,20 @@ def main():
                 pygame.quit()
                 sys.exit()
             elif event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    for note in notes:
+                if event.key == K_d:
+                    pressed_lane = 0
+                elif event.key == K_f:
+                    pressed_lane = 1
+                elif event.key == K_j:
+                    pressed_lane = 2
+                elif event.key == K_k:
+                    pressed_lane = 3
+                    
+                for note in notes:
 
                         if note.hit:
+                            continue
+                        if note.lane != pressed_lane:
                             continue
 
                         diff = abs(current_time - note.judge_time)

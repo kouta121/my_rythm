@@ -4,11 +4,11 @@
         "timing": 2000
     },
     {
-        "lane": 0,
+        "lane": 1,
         "timing": 3000
     },
     {
-        "lane": 0,
+        "lane": 2,
         "timing": 4000
     }
 ]
