@@ -59,7 +59,11 @@ def main():
     judge_text = ""
     judge_timer = 0
 
-    font = pygame.font.Font(r"font\ContiNeue2P-1.0.1.otf", 30)
+    combo_text = ""
+
+    score_text = ""
+
+    font = pygame.font.Font(r"font\ContiNeue2P-1.0.1.otf", 20)
 
 
     while True:
@@ -135,6 +139,12 @@ def main():
         screen.fill((0, 0, 0))
         text = font.render(judge_text, True, (255, 255, 255))
         screen.blit(text, (350, 400))
+
+        combo_text = font.render(f"Combo: {combo}", True, (255, 255, 255))
+        screen.blit(combo_text, (500, 300))
+
+        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+        screen.blit(score_text, (0, 0))
 
         for note in notes:
             if not note.hit:   
