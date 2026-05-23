@@ -30,6 +30,15 @@ class Note:
 def main():
     pygame.init()
 
+    #音楽の再生
+    pygame.mixer.init()
+    pygame.mixer.music.load(r"audio\kazenoanthem.mp3")
+    pygame.mixer.music.play()
+
+    start_time = pygame.time.get_ticks()
+
+    
+    
     screen = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("rhythm")
 
@@ -44,6 +53,8 @@ def main():
         for data in note_data:
             note = Note(data['lane'], data['timing'], 1830)  # ノートの位置とタイミングを設定
             notes.append(note)
+
+    #各変数の初期化
 
     note_speed = 5
 
@@ -68,7 +79,7 @@ def main():
 
     while True:
 
-        current_time = pygame.time.get_ticks()
+        current_time = pygame.time.get_ticks() - start_time
 
         if judge_timer > 0:
             judge_timer -= 1
@@ -92,9 +103,11 @@ def main():
                     pressed_lane = 3
                     
                 for note in notes:
-
+                    #すでにヒットしているノートはスキップ
                     if note.hit:
                             continue
+                    
+                    #押されたキーとノートのレーンが一致しない場合はスキップ
                     if note.lane != pressed_lane:
                             continue
 
@@ -137,6 +150,8 @@ def main():
                 note.hit = True
 
         screen.fill((0, 0, 0))
+
+        #判定, コンボ、スコアの表示
         text = font.render(judge_text, True, (255, 255, 255))
         screen.blit(text, (350, 400))
 
