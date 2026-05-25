@@ -215,6 +215,94 @@ def main():
 
             continue
 
+        
+
+
+        # ------------------------
+        # ゲーム更新
+        # ------------------------
+
+        elif scene == "game":
+
+            current_time = pygame.time.get_ticks() - start_time
+
+            # 判定文字タイマー
+            if judge_timer > 0:
+                judge_timer -= 1
+            else:
+                judge_text = ""
+
+        # ノート更新
+            for note in notes:
+
+                if current_time >= note.timing:
+                    note.update(current_time)
+
+            # Miss判定
+                if not note.hit and current_time > note.judge_time + 100:
+
+                    print("Miss!")
+
+                    judge_text = "Miss!"
+                    judge_timer = 30
+
+                    combo = 0
+
+                    note.hit = True
+
+        # ------------------------
+        # 描画
+        # ------------------------
+
+            screen.fill((0, 0, 0))
+
+        #レーン描画
+
+            for i in range(4):
+
+                pygame.draw.rect(screen, (40, 40, 40), (200 + i * 100 , 0, 100, 600))
+
+                if lane_flash[i] > 0:
+
+                    flash_surface = pygame.Surface((100, 600), pygame.SRCALPHA)
+                    flash_surface.fill((255, 255, 255, 100))  # 半透明の白色
+                    screen.blit(flash_surface, (200 + i * 100, 0))
+
+                    lane_flash[i] -= 1
+
+            for i in range(5):
+                pygame.draw.line(screen, (255, 255, 255), (200 + i * 100, 0), (200 + i * 100, 600), 2)
+
+        # 判定表示
+            text = font.render(judge_text, True, (255, 255, 255))
+
+            screen.blit(text, (350, 400))
+
+        # コンボ表示
+            combo_text = font.render(f"Combo: {combo}", True, (255, 255, 255))
+
+            screen.blit(combo_text, (620, 250))
+
+        # スコア表示
+            score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+
+            screen.blit(score_text, (0, 0))
+
+        # ノート描画
+            for note in notes:
+
+                if not note.hit:
+                    note.draw(screen, note_image)
+
+        # 判定ライン
+            pygame.draw.line(screen, (255, 0, 0), (0, 500), (800, 500), 5)
+
+        
+
+            pygame.display.update()
+
+            clock.tick(60)
+
          # ------------------------
         # リザルト画面描画
         # ------------------------
@@ -240,90 +328,6 @@ def main():
             clock.tick(60)
 
             continue
-
-
-        # ------------------------
-        # ゲーム更新
-        # ------------------------
-
-        current_time = pygame.time.get_ticks() - start_time
-
-        # 判定文字タイマー
-        if judge_timer > 0:
-            judge_timer -= 1
-        else:
-            judge_text = ""
-
-        # ノート更新
-        for note in notes:
-
-            if current_time >= note.timing:
-                note.update(current_time)
-
-            # Miss判定
-            if not note.hit and current_time > note.judge_time + 100:
-
-                print("Miss!")
-
-                judge_text = "Miss!"
-                judge_timer = 30
-
-                combo = 0
-
-                note.hit = True
-
-        # ------------------------
-        # 描画
-        # ------------------------
-
-        screen.fill((0, 0, 0))
-
-        #レーン描画
-
-        for i in range(4):
-
-            pygame.draw.rect(screen, (40, 40, 40), (200 + i * 100 , 0, 100, 600))
-
-            if lane_flash[i] > 0:
-
-                flash_surface = pygame.Surface((100, 600), pygame.SRCALPHA)
-                flash_surface.fill((255, 255, 255, 100))  # 半透明の白色
-                screen.blit(flash_surface, (200 + i * 100, 0))
-
-                lane_flash[i] -= 1
-
-        for i in range(5):
-            pygame.draw.line(screen, (255, 255, 255), (200 + i * 100, 0), (200 + i * 100, 600), 2)
-
-        # 判定表示
-        text = font.render(judge_text, True, (255, 255, 255))
-
-        screen.blit(text, (350, 400))
-
-        # コンボ表示
-        combo_text = font.render(f"Combo: {combo}", True, (255, 255, 255))
-
-        screen.blit(combo_text, (620, 250))
-
-        # スコア表示
-        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
-
-        screen.blit(score_text, (0, 0))
-
-        # ノート描画
-        for note in notes:
-
-            if not note.hit:
-                note.draw(screen, note_image)
-
-        # 判定ライン
-        pygame.draw.line(screen, (255, 0, 0), (0, 500), (800, 500), 5)
-
-        
-
-        pygame.display.update()
-
-        clock.tick(60)
 
 
 if __name__ == "__main__":
