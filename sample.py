@@ -176,6 +176,22 @@ def main():
 
                             note.hit = True
                             break
+                    all_hit = True
+                    for note in notes:
+                        if not note.hit:
+                            all_hit = False
+                        
+                    if all_hit:
+                        scene = "result"
+
+
+            elif scene == "result":
+
+                if event.type == KEYDOWN:
+
+                    if event.key == K_SPACE:
+
+                        scene = "title"
 
         # ------------------------
         # タイトル画面描画
@@ -198,6 +214,33 @@ def main():
             clock.tick(60)
 
             continue
+
+         # ------------------------
+        # リザルト画面描画
+        # ------------------------
+
+        elif scene == "result":
+
+            screen.fill((0, 0, 0))
+
+            result_text = font.render("RESULT", True, (255,255,255))
+            screen.blit(result_text, (300, 150))
+
+            score_text = font.render(f"Score : {score}", True, (255,255,255))
+            screen.blit(score_text, (250, 250))
+
+            combo_text = font.render(f"Max Combo : {max_combo}", True, (255,255,255))
+            screen.blit(combo_text, (250, 320))
+
+            retry_text = font.render("Press SPACE", True, (255,255,255))
+            screen.blit(retry_text, (250, 450))
+
+            pygame.display.update()
+
+            clock.tick(60)
+
+            continue
+
 
         # ------------------------
         # ゲーム更新
