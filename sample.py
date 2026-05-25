@@ -25,9 +25,9 @@ class Note:
         if current_time >= self.timing:
             self.y += self.speed
 
-    def draw(self, screen):
-        pygame.draw.rect(screen, (255, 255, 255),
-                         (self.x, self.y, 50, 50))
+    def draw(self, screen, image):
+        screen.blit(image, (self.x, self.y))
+
 
 
 def main():
@@ -41,6 +41,9 @@ def main():
     screen = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("rhythm")
 
+    note_image = pygame.image.load(r"image\ChatGPT Image 2026年5月25日 22_14_46.png")
+    note_image = pygame.transform.scale(note_image, (110, 110))
+
     clock = pygame.time.Clock()
 
     # ノート読み込み
@@ -50,11 +53,7 @@ def main():
         note_data = json.load(f)
 
         for data in note_data:
-            note = Note(
-                data['lane'],
-                data['timing'],
-                1830
-            )
+            note = Note(data['lane'], data['timing'], 1830)
             notes.append(note)
 
     # 初期化
@@ -70,10 +69,7 @@ def main():
 
     scene = "title"
 
-    font = pygame.font.Font(
-        r"font\ContiNeue2P-1.0.1.otf",
-        20
-    )
+    font = pygame.font.Font(r"font\ContiNeue2P-1.0.1.otf", 20)
 
     start_time = 0
 
@@ -234,29 +230,17 @@ def main():
         screen.fill((0, 0, 0))
 
         # 判定表示
-        text = font.render(
-            judge_text,
-            True,
-            (255, 255, 255)
-        )
+        text = font.render(judge_text, True, (255, 255, 255))
 
         screen.blit(text, (350, 400))
 
         # コンボ表示
-        combo_text = font.render(
-            f"Combo: {combo}",
-            True,
-            (255, 255, 255)
-        )
+        combo_text = font.render(f"Combo: {combo}", True, (255, 255, 255))
 
         screen.blit(combo_text, (500, 300))
 
         # スコア表示
-        score_text = font.render(
-            f"Score: {score}",
-            True,
-            (255, 255, 255)
-        )
+        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
 
         screen.blit(score_text, (0, 0))
 
@@ -264,16 +248,10 @@ def main():
         for note in notes:
 
             if not note.hit:
-                note.draw(screen)
+                note.draw(screen, note_image)
 
         # 判定ライン
-        pygame.draw.line(
-            screen,
-            (255, 0, 0),
-            (0, 500),
-            (800, 500),
-            5
-        )
+        pygame.draw.line(screen, (255, 0, 0), (0, 500), (800, 500), 5)
 
         pygame.display.update()
 
