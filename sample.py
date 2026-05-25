@@ -9,10 +9,10 @@ class Note:
         self.lane = lane
 
         lane_x = {
-            0: 200,
-            1: 300,
-            2: 400,
-            3: 500
+            0: 210,
+            1: 310,
+            2: 410,
+            3: 510
         }
 
         self.x = lane_x[lane]
@@ -42,7 +42,7 @@ def main():
     pygame.display.set_caption("rhythm")
 
     note_image = pygame.image.load(r"image\ChatGPT Image 2026年5月25日 22_14_46.png")
-    note_image = pygame.transform.scale(note_image, (110, 110))
+    note_image = pygame.transform.scale(note_image, (80, 80))
 
     clock = pygame.time.Clock()
 
@@ -72,6 +72,8 @@ def main():
     font = pygame.font.Font(r"font\ContiNeue2P-1.0.1.otf", 20)
 
     start_time = 0
+
+    lane_flash = [0, 0, 0, 0]
 
     while True:
 
@@ -114,15 +116,19 @@ def main():
 
                     if event.key == K_d:
                         pressed_lane = 0
+                        lane_flash[0] = 10
 
                     elif event.key == K_f:
                         pressed_lane = 1
+                        lane_flash[1] = 10
 
                     elif event.key == K_j:
                         pressed_lane = 2
+                        lane_flash[2] = 10
 
                     elif event.key == K_k:
                         pressed_lane = 3
+                        lane_flash[3] = 10
 
                     # ノート判定
                     for note in notes:
@@ -229,6 +235,23 @@ def main():
 
         screen.fill((0, 0, 0))
 
+        #レーン描画
+
+        for i in range(4):
+
+            pygame.draw.rect(screen, (40, 40, 40), (200 + i * 100 , 0, 100, 600))
+
+            if lane_flash[i] > 0:
+
+                flash_surface = pygame.Surface((100, 600), pygame.SRCALPHA)
+                flash_surface.fill((255, 255, 255, 100))  # 半透明の白色
+                screen.blit(flash_surface, (200 + i * 100, 0))
+
+                lane_flash[i] -= 1
+
+        for i in range(5):
+            pygame.draw.line(screen, (255, 255, 255), (200 + i * 100, 0), (200 + i * 100, 600), 2)
+
         # 判定表示
         text = font.render(judge_text, True, (255, 255, 255))
 
@@ -237,7 +260,7 @@ def main():
         # コンボ表示
         combo_text = font.render(f"Combo: {combo}", True, (255, 255, 255))
 
-        screen.blit(combo_text, (500, 300))
+        screen.blit(combo_text, (620, 250))
 
         # スコア表示
         score_text = font.render(f"Score: {score}", True, (255, 255, 255))
@@ -252,6 +275,8 @@ def main():
 
         # 判定ライン
         pygame.draw.line(screen, (255, 0, 0), (0, 500), (800, 500), 5)
+
+        
 
         pygame.display.update()
 
