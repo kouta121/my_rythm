@@ -36,8 +36,7 @@ def main():
 
     # 音楽初期化
     pygame.mixer.init()
-    pygame.mixer.music.load(r"audio\kazenoanthem.mp3")
-
+    
     screen = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("rhythm")
 
@@ -46,16 +45,7 @@ def main():
 
     clock = pygame.time.Clock()
 
-    # ノート読み込み
-    notes = []
-
-    with open('charts/test.json', 'r') as f:
-        note_data = json.load(f)
-
-        for data in note_data:
-            note = Note(data['lane'], data['timing'], 1830)
-            notes.append(note)
-
+    
     # 初期化
     score = 0
 
@@ -74,6 +64,22 @@ def main():
     start_time = 0
 
     lane_flash = [0, 0, 0, 0]
+
+    selected_song = 0
+
+    songs = [
+    {
+        "title": "Kazeno Anthem",
+        "music": r"audio\kazenoanthem.mp3",
+        "chart": r"charts\kazenoanthem.json"
+    },
+
+    {
+        "title": "Underdog",
+        "music": r"audio\underdog.mp3",
+        "chart": r"charts\underdog.json"
+    }
+]
 
     while True:
 
@@ -100,11 +106,31 @@ def main():
 
                     if event.key == K_SPACE:
 
-                        scene = "game"
+                        scene = "select"
 
+                        
+
+            elif scene == "select":
+
+                if event.type == KEYDOWN:
+
+                    if event.key == K_UP:
+                        selected_song = (selected_song - 1) % len(songs)
+                    elif event.key == K_DOWN:
+                        selected_song = (selected_song + 1) % len(songs)
+                    elif event.key == K_SPACE:
+                        pygame.mixer.music.load(songs[selected_song]["music"])
                         pygame.mixer.music.play()
-
+                        scene = "game"
                         start_time = pygame.time.get_ticks()
+                        notes = []
+
+                        with open(songs[selected_song]["chart"], 'r') as f:
+                            note_data = json.load(f)
+
+                            for data in note_data:
+                                note = Note(data['lane'], data['timing'], 1830)
+                                notes.append(note)
 
             # ------------------------
             # ゲーム画面
@@ -214,6 +240,33 @@ def main():
             clock.tick(60)
 
             continue
+
+        if scene == "select":
+            screen.fill((0, 0, 0))
+
+            select_text = font.render(
+                "Select Song",
+                True,
+                (255, 255, 255)
+            )
+
+            screen.blit(select_text, (300, 150))
+
+            song_text = font.render(songs[selected_song]["title"], True, (255, 255, 255))
+
+            screen.blit(song_text, (300, 250))
+
+            instruction_text = font.render(
+                "Use UP/DOWN to select and SPACE to start",
+                True,
+                (255, 255, 255)
+            )
+
+            screen.blit(instruction_text, (10, 450))
+
+            pygame.display.update()
+
+            clock.tick(60)
 
         
 
